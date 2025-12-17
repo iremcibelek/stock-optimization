@@ -10,8 +10,6 @@ public class ValueCostBarChart extends JPanel {
     public void setValues(double gv, double dv, double gc, double dc) {
         gValue = gv;
         dValue = dv;
-//        gCost = gc;
-//        dCost = dc;
         repaint();
     }
 
