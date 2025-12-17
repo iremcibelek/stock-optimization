@@ -16,7 +16,6 @@ public class MainFrame extends JFrame {
     private JTextArea dpArea;
     private ValueCostBarChart valueCostChart;
     private TimeBarChart timeChart;
-    private PieChartPanel pieChart;
 
     // Detay pencereleri için veri tutucular
     private List<Department> lastGreedy;
@@ -53,8 +52,8 @@ public class MainFrame extends JFrame {
         runButton.setBackground(new Color(0, 102, 204));
         runButton.setForeground(Color.WHITE);
 
-        JButton greedyDetails = new JButton("Greedy Detayları");
-        JButton dpDetails = new JButton("DP Detayları");
+        JButton greedyDetails = new JButton("Greedy için Seçilen Departmanlar");
+        JButton dpDetails = new JButton("DP için Seçilen Departmanlar");
 
         top.add(budgetLabel);
         top.add(budgetBox);
@@ -86,12 +85,12 @@ public class MainFrame extends JFrame {
         JScrollPane dpScroll = new JScrollPane(dpArea);
 
         JSplitPane centerSplit = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, greedyScroll, dpScroll);
-        centerSplit.setDividerLocation(570);
+        centerSplit.setDividerLocation(550);
         centerSplit.setResizeWeight(0.5);
         add(centerSplit, BorderLayout.CENTER);
 
         // ================= BOTTOM PANEL (Grafikler) =================
-        JPanel bottomPanel = new JPanel(new GridLayout(1, 3, 10, 10));
+        JPanel bottomPanel = new JPanel(new GridLayout(1, 2, 10, 10));
         bottomPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         bottomPanel.setPreferredSize(new Dimension(1100, 250));
 
@@ -101,12 +100,8 @@ public class MainFrame extends JFrame {
         timeChart = new TimeBarChart();
         timeChart.setBorder(BorderFactory.createEtchedBorder());
 
-        pieChart = new PieChartPanel();
-        pieChart.setBorder(BorderFactory.createEtchedBorder());
-
         bottomPanel.add(valueCostChart);
         bottomPanel.add(timeChart);
-        bottomPanel.add(pieChart);
         add(bottomPanel, BorderLayout.SOUTH);
 
         // ================= ACTION LISTENERS (Mantık Kısmı) =================
@@ -174,9 +169,6 @@ public class MainFrame extends JFrame {
                 double gTime = (gEnd - gStart) / 1_000_000.0;
                 double dTime = (dEnd - dStart) / 1_000_000.0;
 
-                // --- KRİTİK DÜZELTME BURADA ---
-                // Her algoritma için artan parayı AYRI AYRI hesaplıyoruz.
-
                 int greedyAlgoSpent = gRes.extraCostOnly;
                 int greedyUnused = budgetForAlgorithm - greedyAlgoSpent; // Greedy ne kadar arttırdı?
 
@@ -194,7 +186,7 @@ public class MainFrame extends JFrame {
                 sbGreedy.append("ALGORİTMA: Greedy (Hızlı)\n");
                 sbGreedy.append("Ekstra Seçilen: " + greedyExtra.size() + " ürün\n");
                 sbGreedy.append("Algoritma Harcaması: " + greedyAlgoSpent + "\n");
-                sbGreedy.append("Kalan (Artan) Para: " + greedyUnused + "\n"); // <-- DOĞRU DEĞER
+                sbGreedy.append("Kalan (Artan) Para: " + greedyUnused + "\n");
                 sbGreedy.append("--------------------------------\n");
                 sbGreedy.append("SİSTEM GENELİ TOPLAM:\n");
                 sbGreedy.append("TOPLAM HARCANAN: " + gRes.totalCost + "\n");
@@ -224,7 +216,6 @@ public class MainFrame extends JFrame {
                 // Grafikleri Güncelle
                 valueCostChart.setValues(gRes.totalValue, dRes.totalValue, gRes.totalCost, dRes.totalCost);
                 timeChart.setTimes(gTime, dTime);
-                pieChart.setValues(gRes.totalValue, dRes.totalValue);
 
             } catch (Exception ex) {
                 ex.printStackTrace();

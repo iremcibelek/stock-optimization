@@ -5,13 +5,13 @@ import java.awt.*;
 
 public class ValueCostBarChart extends JPanel {
 
-    private double gValue, dValue, gCost, dCost;
+    private double gValue, dValue;
 
     public void setValues(double gv, double dv, double gc, double dc) {
         gValue = gv;
         dValue = dv;
-        gCost = gc;
-        dCost = dc;
+//        gCost = gc;
+//        dCost = dc;
         repaint();
     }
 
@@ -26,7 +26,7 @@ public class ValueCostBarChart extends JPanel {
         int leftMargin = 60;
         int rightMargin = 20;
         int topMargin = 20;
-        int bottomMargin = 40;
+        int bottomMargin = 60;
 
         int chartHeight = getHeight() - topMargin - bottomMargin;
         int baseY = getHeight() - bottomMargin;
@@ -43,8 +43,8 @@ public class ValueCostBarChart extends JPanel {
             g2.drawLine(leftMargin, y, getWidth() - rightMargin, y);
         }
 
-        drawPair(g2, 120, chartHeight, baseY, gValue, dValue, "Total Value");
-        drawPair(g2, 380, chartHeight, baseY, gCost, dCost, "Used Budget");
+        drawPair(g2, 120, chartHeight, baseY, gValue, dValue, "Toplam Değer");
+        //drawPair(g2, 380, chartHeight, baseY, gCost, dCost, "Used Budget");
     }
 
     private void drawPair(Graphics2D g, int x, int chartHeight, int baseY,

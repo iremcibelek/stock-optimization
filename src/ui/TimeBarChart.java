@@ -22,7 +22,7 @@ public class TimeBarChart extends JPanel {
                 RenderingHints.VALUE_ANTIALIAS_ON);
 
         int leftMargin = 60;
-        int bottomMargin = 40;
+        int bottomMargin = 60;
         int topMargin = 20;
 
         int chartHeight = getHeight() - topMargin - bottomMargin;
@@ -99,6 +99,17 @@ public class TimeBarChart extends JPanel {
         // ===== LABELS =====
         g2.drawString("Greedy", greedyX + 3, baseY + 15);
         g2.drawString("DP", dpX + 15, baseY + 15);
+
+        // ===== GRAPH TITLE (BOTTOM CENTER) =====
+        g2.setFont(new Font("Segoe UI", Font.BOLD, 13));
+        String title = "Yürütme Süresi (ms)";
+
+        int titleWidth = g2.getFontMetrics().stringWidth(title);
+        int x = (getWidth() - titleWidth) / 2;
+        int y = getHeight() - 15;
+
+        g2.drawString(title, x, y);
+
     }
 }
 

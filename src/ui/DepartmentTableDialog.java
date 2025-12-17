@@ -9,7 +9,7 @@ import java.util.List;
 public class DepartmentTableDialog extends JDialog {
 
     public DepartmentTableDialog(JFrame parent, String title, List<Department> depts) {
-        super(parent, title, true);
+        super(parent, title, false);
         setSize(300, 400);
         setLocationRelativeTo(parent);
 
