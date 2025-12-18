@@ -42,7 +42,6 @@ public class ValueCostBarChart extends JPanel {
         }
 
         drawPair(g2, 120, chartHeight, baseY, gValue, dValue, "Toplam Değer");
-        //drawPair(g2, 380, chartHeight, baseY, gCost, dCost, "Used Budget");
     }
 
     private void drawPair(Graphics2D g, int x, int chartHeight, int baseY,

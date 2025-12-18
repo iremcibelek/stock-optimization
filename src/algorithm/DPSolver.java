@@ -8,17 +8,15 @@ public class DPSolver {
     public static List<Department> solve(List<Department> depts, int budget) {
         int n = depts.size();
 
-        // Tablo oluşturma
         int[][] dp = new int[n + 1][budget + 1];
 
         for (int i = 1; i <= n; i++) {
             Department d = depts.get(i - 1);
             for (int b = 0; b <= budget; b++) {
                 if (d.cost <= b) {
-                    // Math.max yerine kendi fonksiyonumuzu kullandık
-                    dp[i][b] = myMax(
-                            dp[i - 1][b],
-                            dp[i - 1][b - d.cost] + d.value
+                    dp[i][b] = Math.max(
+                            dp[i - 1][b], // Ürünü almazsak
+                            dp[i - 1][b - d.cost] + d.value // Ürünü alırsak
                     );
                 } else {
                     dp[i][b] = dp[i - 1][b];
@@ -39,15 +37,5 @@ public class DPSolver {
         }
 
         return selected;
-    }
-
-    // Java'nın Math.max fonksiyonunu kullanmak yerine kendimiz yazdık
-    private static int myMax(int a, int b) {
-        if (a > b) {
-            return a;
-        } else {
-            return b;
-        }
-        // Kısa yolu: return (a > b) ? a : b;
     }
 }

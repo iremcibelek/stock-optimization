@@ -104,10 +104,8 @@ public class MainFrame extends JFrame {
         bottomPanel.add(timeChart);
         add(bottomPanel, BorderLayout.SOUTH);
 
-        // ================= ACTION LISTENERS (Mantık Kısmı) =================
         runButton.addActionListener(e -> {
             try {
-                // 1. Veriyi Oku
                 List<Department> departments = CSVReader.loadDepartments("data/cleanedWalmartTopStore.csv");
 
                 if (departments == null || departments.isEmpty()) {
@@ -132,7 +130,6 @@ public class MainFrame extends JFrame {
 
                 int percent = (Integer) budgetBox.getSelectedItem();
 
-                // Long taşmasını önleyerek hesapla
                 long totalBudgetLong = (totalPoolCost * percent) / 100;
                 int totalBudget = (int) totalBudgetLong;
 
@@ -146,23 +143,22 @@ public class MainFrame extends JFrame {
                     return;
                 }
 
-                // 3. Algoritmaları Çalıştır
 
-                // --- GREEDY ---
+                // GREEDY calıstır
                 long gStart = System.nanoTime();
                 List<Department> greedyExtra = GreedySolver.solve(departments, budgetForAlgorithm);
                 long gEnd = System.nanoTime();
 
-                // --- DP ---
+                // DP calıstır
                 long dStart = System.nanoTime();
                 List<Department> dpExtra = DPSolver.solve(departments, budgetForAlgorithm);
                 long dEnd = System.nanoTime();
 
-                // Sonuçları Sakla (Detay butonu için)
+                // Sonucları sakla
                 lastGreedy = greedyExtra;
                 lastDP = dpExtra;
 
-                // Toplamları Hesapla (Yardımcı sınıfı kullanıyoruz)
+                // Toplamları hesapla
                 Result gRes = calculateTotal(greedyExtra, (int)mandatoryCost, (int)mandatoryValue);
                 Result dRes = calculateTotal(dpExtra, (int)mandatoryCost, (int)mandatoryValue);
 
@@ -170,12 +166,10 @@ public class MainFrame extends JFrame {
                 double dTime = (dEnd - dStart) / 1_000_000.0;
 
                 int greedyAlgoSpent = gRes.extraCostOnly;
-                int greedyUnused = budgetForAlgorithm - greedyAlgoSpent; // Greedy ne kadar arttırdı?
+                int greedyUnused = budgetForAlgorithm - greedyAlgoSpent; // Greedy ne kadar kaldı?
 
                 int dpAlgoSpent = dRes.extraCostOnly;
-                int dpUnused = budgetForAlgorithm - dpAlgoSpent; // DP ne kadar arttırdı?
-
-                // 4. Sonuçları Ekrana Bas
+                int dpUnused = budgetForAlgorithm - dpAlgoSpent; // DP ne kadar kaldı?
 
                 // --- GREEDY TEXT ---
                 StringBuilder sbGreedy = new StringBuilder();
@@ -228,8 +222,6 @@ public class MainFrame extends JFrame {
         dpDetails.addActionListener(e -> showDetails(lastDP, "DP"));
     }
 
-    // ================= YARDIMCI METOTLAR =================
-
     private void showDetails(List<Department> list, String title) {
         if (list != null)
             new DepartmentTableDialog(this, title, list).setVisible(true);
@@ -248,7 +240,6 @@ public class MainFrame extends JFrame {
         return new Result(baseCost + cost, baseValue + val, cost);
     }
 
-    // Veri Taşıyıcı Sınıf (Struct)
     private static class Result {
         int totalCost, totalValue, extraCostOnly;
         Result(int tc, int tv, int ec) {
