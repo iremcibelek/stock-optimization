@@ -24,7 +24,7 @@ public class DPSolver {
             }
         }
 
-        // Geriye Dönük İz Sürme (Backtracking)
+        // Geriye donuk iz surme (Backtracking)
         List<Department> selected = new ArrayList<>();
         int b = budget;
 

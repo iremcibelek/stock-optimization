@@ -14,7 +14,7 @@ public class GreedySolver {
 
         mergeSort(deptArray, 0, deptArray.length - 1);
 
-        // Klasik Greedy Seçimi
+        // Greedy secimi
         List<Department> selected = new ArrayList<>();
         int usedBudget = 0;
 
@@ -56,7 +56,7 @@ public class GreedySolver {
         int i = 0, j = 0;
         int k = left;
         while (i < n1 && j < n2) {
-            if (L[i].getRatio() >= R[j].getRatio()) { // Büyük olanı başa al
+            if (L[i].getRatio() >= R[j].getRatio()) { // buyuk olanı basa al
                 arr[k] = L[i];
                 i++;
             } else {

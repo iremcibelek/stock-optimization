@@ -4,112 +4,61 @@ import javax.swing.*;
 import java.awt.*;
 
 public class TimeBarChart extends JPanel {
+    private double greedyTime, dpTime;
 
-    private double gTime, dTime;
-
-    public void setTimes(double g, double d) {
-        gTime = g;
-        dTime = d;
+    public void setTimes(double gTime, double dTime) {
+        this.greedyTime = gTime;
+        this.dpTime = dTime;
         repaint();
     }
 
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
+        g.setColor(Color.WHITE);
+        g.fillRect(0, 0, getWidth(), getHeight());
 
-        Graphics2D g2 = (Graphics2D) g;
-        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-                RenderingHints.VALUE_ANTIALIAS_ON);
+        if (greedyTime == 0 && dpTime == 0) return;
 
-        int leftMargin = 60;
-        int bottomMargin = 60;
-        int topMargin = 20;
+        int w = getWidth();
+        int h = getHeight();
+        int bottomMargin = 50;
+        int maxH = h - bottomMargin - 40;
+        int barWidth = w / 6;
 
-        int chartHeight = getHeight() - topMargin - bottomMargin;
+        double maxT = Math.max(greedyTime, dpTime);
+        if (maxT == 0) maxT = 1;
 
-        // eksenler
-        g2.setColor(Color.BLACK);
+        // Aynı renkler
+        Color colorGreedy = new Color(255, 204, 0);
+        Color colorDP = new Color(102, 0, 153);
 
-        // Y ekseni
-        g2.drawLine(leftMargin, topMargin, leftMargin, getHeight() - bottomMargin);
+        int hG = (int) ((greedyTime * maxH) / maxT);
+        int hD = (int) ((dpTime * maxH) / maxT);
+        if (hG < 5 && greedyTime > 0) hG = 5;
+        if (hD < 5 && dpTime > 0) hD = 5;
 
-        // X ekseni
-        g2.drawLine(leftMargin,
-                getHeight() - bottomMargin,
-                getWidth() - 20,
-                getHeight() - bottomMargin);
+        // Greedy
+        g.setColor(colorGreedy);
+        g.fillRect(barWidth, h - bottomMargin - hG, barWidth, hG);
+        g.setColor(Color.BLACK);
+        g.setFont(new Font("Arial", Font.PLAIN, 11));
+        FontMetrics fm = g.getFontMetrics();
+        String gLbl = "Greedy";
+        String gVal = String.format("%.3f ms", greedyTime);
+        g.drawString(gLbl, barWidth + (barWidth - fm.stringWidth(gLbl))/2, h - 25);
+        g.drawString(gVal, barWidth + (barWidth - fm.stringWidth(gVal))/2, h - bottomMargin - hG - 5);
 
-        g2.setColor(new Color(220, 220, 220));
-        for (int i = 1; i <= 5; i++) {
-            int y = topMargin + i * chartHeight / 5;
-            g2.drawLine(leftMargin, y, getWidth() - 20, y);
-        }
+        // DP
+        g.setColor(colorDP);
+        g.fillRect(barWidth * 3, h - bottomMargin - hD, barWidth, hD);
+        String dLbl = "DP";
+        String dVal = String.format("%.3f ms", dpTime);
+        g.drawString(dLbl, barWidth*3 + (barWidth - fm.stringWidth(dLbl))/2, h - 25);
+        g.drawString(dVal, barWidth*3 + (barWidth - fm.stringWidth(dVal))/2, h - bottomMargin - hD - 5);
 
-        if (gTime <= 0 && dTime <= 0) return;
-
-        double max = Math.max(gTime, dTime);
-
-        int barWidth = 50;
-
-        int greedyX = leftMargin + 40;
-        int dpX = leftMargin + 140;
-
-        int greedyHeight = (int) (gTime / max * chartHeight);
-        int dpHeight = (int) (dTime / max * chartHeight);
-
-        int baseY = getHeight() - bottomMargin;
-
-        // ===== GREEDY BAR =====
-        g2.setColor(Color.BLUE);
-        g2.fillRect(
-                greedyX,
-                baseY - greedyHeight,
-                barWidth,
-                greedyHeight
-        );
-
-        // ===== DP BAR =====
-        g2.setColor(Color.RED);
-        g2.fillRect(
-                dpX,
-                baseY - dpHeight,
-                barWidth,
-                dpHeight
-        );
-
-        // ===== VALUES ABOVE BARS =====
-        g2.setColor(Color.BLACK);
-        g2.setFont(new Font("Segoe UI", Font.BOLD, 12));
-
-        String gText = String.format("%.3f ms", gTime);
-        String dText = String.format("%.3f ms", dTime);
-
-        g2.drawString(
-                gText,
-                greedyX + barWidth / 2 - g2.getFontMetrics().stringWidth(gText) / 2,
-                baseY - greedyHeight - 5
-        );
-
-        g2.drawString(
-                dText,
-                dpX + barWidth / 2 - g2.getFontMetrics().stringWidth(dText) / 2,
-                baseY - dpHeight - 5
-        );
-
-        // ===== LABELS =====
-        g2.drawString("Greedy", greedyX + 3, baseY + 15);
-        g2.drawString("DP", dpX + 15, baseY + 15);
-
-        // ===== GRAPH TITLE (BOTTOM CENTER) =====
-        g2.setFont(new Font("Segoe UI", Font.BOLD, 13));
-        String title = "Yürütme Süresi (ms)";
-
-        int titleWidth = g2.getFontMetrics().stringWidth(title);
-        int x = (getWidth() - titleWidth) / 2;
-        int y = getHeight() - 15;
-
-        g2.drawString(title, x, y);
-
+        g.setFont(new Font("Arial", Font.BOLD, 13));
+        String title = "Çalışma Süresi";
+        g.drawString(title, (w - fm.stringWidth(title))/2, 20);
     }
 }
-

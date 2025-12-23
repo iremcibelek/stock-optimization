@@ -4,93 +4,70 @@ import javax.swing.*;
 import java.awt.*;
 
 public class ValueCostBarChart extends JPanel {
+    private long greedyValue, dpValue, greedyCost, dpCost;
 
-    private double gValue, dValue;
-
-    public void setValues(double gv, double dv, double gc, double dc) {
-        gValue = gv;
-        dValue = dv;
+    public void setValues(long gVal, long dVal, long gCost, long dCost) {
+        this.greedyValue = gVal;
+        this.dpValue = dVal;
+        this.greedyCost = gCost;
+        this.dpCost = dCost;
         repaint();
     }
 
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
+        g.setColor(Color.WHITE);
+        g.fillRect(0, 0, getWidth(), getHeight());
 
-        Graphics2D g2 = (Graphics2D) g;
-        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-                RenderingHints.VALUE_ANTIALIAS_ON);
-
-        int leftMargin = 60;
-        int rightMargin = 20;
-        int topMargin = 20;
-        int bottomMargin = 60;
-
-        int chartHeight = getHeight() - topMargin - bottomMargin;
-        int baseY = getHeight() - bottomMargin;
-
-        // ===== AXES =====
-        g2.setColor(Color.BLACK);
-        g2.drawLine(leftMargin, topMargin, leftMargin, baseY);
-        g2.drawLine(leftMargin, baseY, getWidth() - rightMargin, baseY);
-
-        // ===== GRID =====
-        g2.setColor(new Color(220, 220, 220));
-        for (int i = 1; i <= 5; i++) {
-            int y = topMargin + i * chartHeight / 5;
-            g2.drawLine(leftMargin, y, getWidth() - rightMargin, y);
+        if (greedyValue == 0 && dpValue == 0) {
+            g.setColor(Color.GRAY);
+            g.setFont(new Font("Arial", Font.BOLD, 12));
+            String msg = "Veri Yok";
+            FontMetrics fm = g.getFontMetrics();
+            g.drawString(msg, (getWidth()-fm.stringWidth(msg))/2, getHeight()/2);
+            return;
         }
 
-        drawPair(g2, 120, chartHeight, baseY, gValue, dValue, "Toplam Değer");
-    }
+        int w = getWidth();
+        int h = getHeight();
+        int bottomMargin = 50;
+        int maxH = h - bottomMargin - 40;
+        int barWidth = w / 6;
 
-    private void drawPair(Graphics2D g, int x, int chartHeight, int baseY,
-                          double gv, double dv, String label) {
+        long maxVal = Math.max(greedyValue, dpValue);
+        if (maxVal == 0) maxVal = 1;
 
-        double max = Math.max(gv, dv);
-        if (max == 0) return;
+        // Renkler aynı
+        Color colorGreedy = new Color(255, 204, 0); // Sarı
+        Color colorDP = new Color(102, 0, 153);     // Mor
 
-        int barWidth = 50;
-        int gap = 30;
+        int hG = (int) ((greedyValue * maxH) / maxVal);
+        int hD = (int) ((dpValue * maxH) / maxVal);
+        if (hG < 5 && greedyValue > 0) hG = 5;
+        if (hD < 5 && dpValue > 0) hD = 5;
 
-        int gh = (int) (gv / max * chartHeight);
-        int dh = (int) (dv / max * chartHeight);
-
-        int gX = x;
-        int dX = x + barWidth + gap;
-
-        // Greedy
-        g.setColor(Color.BLUE);
-        g.fillRect(gX, baseY - gh, barWidth, gh);
-
-        // DP
-        g.setColor(Color.RED);
-        g.fillRect(dX, baseY - dh, barWidth, dh);
-
-        // Values above bars
+        // Greedy bar
+        g.setColor(colorGreedy);
+        g.fillRect(barWidth, h - bottomMargin - hG, barWidth, hG);
         g.setColor(Color.BLACK);
-        g.setFont(new Font("Segoe UI", Font.BOLD, 12));
+        g.setFont(new Font("Arial", Font.PLAIN, 11));
+        FontMetrics fm = g.getFontMetrics();
+        String gTxt = "Greedy";
+        String gVal = String.valueOf(greedyValue);
+        g.drawString(gTxt, barWidth + (barWidth - fm.stringWidth(gTxt))/2, h - 25);
+        g.drawString(gVal, barWidth + (barWidth - fm.stringWidth(gVal))/2, h - bottomMargin - hG - 5);
 
-        String gvText = String.format("%.2f", gv);
-        String dvText = String.format("%.2f", dv);
+        // DP bar
+        g.setColor(colorDP);
+        g.fillRect(barWidth * 3, h - bottomMargin - hD, barWidth, hD);
+        String dTxt = "DP";
+        String dVal = String.valueOf(dpValue);
+        g.drawString(dTxt, barWidth*3 + (barWidth - fm.stringWidth(dTxt))/2, h - 25);
+        g.drawString(dVal, barWidth*3 + (barWidth - fm.stringWidth(dVal))/2, h - bottomMargin - hD - 5);
 
-        g.drawString(
-                gvText,
-                gX + barWidth / 2 - g.getFontMetrics().stringWidth(gvText) / 2,
-                baseY - gh - 5
-        );
-
-        g.drawString(
-                dvText,
-                dX + barWidth / 2 - g.getFontMetrics().stringWidth(dvText) / 2,
-                baseY - dh - 5
-        );
-
-        // Labels
-        g.drawString("Greedy", gX + 3, baseY + 15);
-        g.drawString("DP", dX + 15, baseY + 15);
-
-        // Category label
-        g.drawString(label, x + 15, getHeight() - 10);
+        g.setFont(new Font("Arial", Font.BOLD, 13));
+        String title = "Toplam Kâr (Değer)";
+        g.drawString(title, (w - fm.stringWidth(title))/2, 20);
     }
 }
