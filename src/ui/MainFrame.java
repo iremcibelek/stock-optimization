@@ -29,7 +29,7 @@ public class MainFrame extends JFrame {
     public static final Color COL_DP = new Color(102, 0, 153);
 
     public MainFrame() {
-        setTitle("Algoritmik Stok Optimizasyonu (Final)");
+        setTitle("Algoritmik Stok Optimizasyonu");
         setSize(1350, 850);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
